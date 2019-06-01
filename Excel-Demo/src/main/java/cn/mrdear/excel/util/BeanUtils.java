@@ -32,7 +32,11 @@ public class BeanUtils {
       if (fieldName == null) {
         result.put(field.getName(), field.get(source));
       } else {
-        if (fieldName.Ignore()) continue;
+        //此字段是否忽略放入map
+        if (fieldName.Ignore())
+        {
+          continue;
+        }
         result.put(fieldName.value(), field.get(source));
       }
     }
