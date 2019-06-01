@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -104,6 +105,9 @@ public class ExcelFormat {
                         cell.setCellValue((Date) obj);
                     } else if (obj instanceof Boolean) {
                         cell.setCellValue((Boolean) obj);
+                    } else if (obj instanceof BigDecimal)
+                    {
+                        cell.setCellValue(Double.valueOf(obj.toString()));
                     } else {
                         throw new IllegalArgumentException("unsupported cell type");
                     }
@@ -131,6 +135,11 @@ public class ExcelFormat {
     public void write(String dirIncludedFileName){
         try {
             File file = new File(dirIncludedFileName);
+            //父节点
+            File fileParent = file.getParentFile();
+            if(!fileParent.exists()){
+                fileParent.mkdirs();
+            }
             FileOutputStream os = new FileOutputStream(file);
             workbook.write(os);
             os.close();
@@ -138,7 +147,10 @@ public class ExcelFormat {
             logger.error("write excel fail ",e);
         }finally {
             try {
-                if (workbook != null) workbook.close();
+                if (workbook != null)
+                {
+                    workbook.close();
+                }
             } catch (IOException e) {
                 logger.error("write excel fail ",e);
             }

@@ -29,6 +29,7 @@ public class ExcelFormatTest {
         extractorHeaders = new LinkedHashMap<>();
         headers.put("username","用户名");
         headers.put("passWord", "密码");
+        headers.put("amount", "总额");
         extractorHeaders.put("用户名","username");
         extractorHeaders.put("密码", "passWord");
     }
@@ -49,11 +50,11 @@ public class ExcelFormatTest {
         ExcelFormat.from(headers,content)
                 .excelType(ExcelType.XLS)
                 .build("niuli")
-                .write("/tmp/niuli.xls");
+                .write("D:/tmp2/niuli.xls");
         System.out.println("写入成功");
         //读取
         try {
-            InputStream in = new FileInputStream(new File("/tmp/niuli.xls"));
+            InputStream in = new FileInputStream(new File("D:/tmp2/niuli.xls"));
             List<Demo> result = ExcelExtractor.extractFrom(ExcelType.XLS,in,Demo.class,
                 extractorHeaders,0);
             System.out.println(result);
