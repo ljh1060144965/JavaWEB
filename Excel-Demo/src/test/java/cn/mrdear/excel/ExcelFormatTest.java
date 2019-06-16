@@ -50,7 +50,7 @@ public class ExcelFormatTest {
         ExcelFormat.from(headers,content)
                 .excelType(ExcelType.XLS)
                 .build("niuli")
-                .write("D:/tmp2/niuli.xls");
+                .write("D:/tmp23");
         System.out.println("写入成功");
         //读取
         try {

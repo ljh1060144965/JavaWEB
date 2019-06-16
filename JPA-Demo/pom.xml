@@ -149,6 +149,12 @@
       <version>${querydsl.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.querydsl</groupId>
+      <artifactId>querydsl-sql</artifactId>
+      <version>${querydsl.version}</version>
+      <scope>test</scope>
+    </dependency>
     <!--query dsl end-->
   </dependencies>
 
