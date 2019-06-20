@@ -110,6 +110,7 @@ public class QTest {
     @Test
     public  void groupB()
     {
+        //分组只能查出一条数据，所以常和聚合函数一起用
         QUser qUser=QUser.user;
         Tuple a = new JPAQueryFactory(em).select(qUser.age.sum(),qUser.id).from(qUser)
                 .where(qUser.name.eq("s"))
@@ -126,7 +127,7 @@ public class QTest {
         System.out.println(dd.toString());
         QUser u=QUser.user;
         // SQLInsertClause insert = queryFactory.insert(u);
-        List<Integer> s = new JPAQueryFactory(em).select(u.age).from(u)
+        List<User> s = new JPAQueryFactory(em).select(u).from(u)
                 .distinct().fetch();
         System.out.println();
 
