@@ -5,6 +5,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.sql.SQLQueryFactory;
+import com.querydsl.sql.dml.SQLInsertClause;
 import com.sun.xml.internal.bind.v2.TODO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.lang.reflect.Field;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /****
  * <pre>类名: QTest</pre>
@@ -37,8 +35,8 @@ public class QTest {
     @PersistenceContext
     private EntityManager em;
 
-    @Autowired
-    private SQLQueryFactory queryFactory;
+      /*@Autowired
+        private SQLQueryFactory queryFactory;*/
 
 
     @Test
@@ -118,6 +116,19 @@ public class QTest {
                 .groupBy(qUser.name)
                 .fetchOne();
         log.error("-----------------------{}",a.get(qUser.age.sum()));
+
+    }
+    @Test
+    public void queryFactoryInsert()
+    {
+        //去重 distinct
+        Date dd=new Date();
+        System.out.println(dd.toString());
+        QUser u=QUser.user;
+        // SQLInsertClause insert = queryFactory.insert(u);
+        List<Integer> s = new JPAQueryFactory(em).select(u.age).from(u)
+                .distinct().fetch();
+        System.out.println();
 
     }
 }
