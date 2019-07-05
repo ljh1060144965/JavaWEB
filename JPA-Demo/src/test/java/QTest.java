@@ -166,5 +166,22 @@ public class QTest {
                 .fetch();
         Assert.assertNotNull(u2);
     }
+
+    @Test
+    public void normalTT()
+    {
+        QUser qUser=QUser.user;
+        em.flush();
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)//设置结束后不回滚
+    public void updateTT()
+    {
+        QUser qUser=QUser.user;
+        new JPAQueryFactory(em).update(qUser).set(qUser.age,22).set(qUser.name,"22").where(qUser.id.eq(444)).execute();
+
+    }
 }
 
