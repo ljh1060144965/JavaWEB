@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.dml.SQLInsertClause;
 import com.sun.xml.internal.bind.v2.TODO;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -181,6 +182,27 @@ public class QTest {
     {
         QUser qUser=QUser.user;
         new JPAQueryFactory(em).update(qUser).set(qUser.age,22).set(qUser.name,"22").where(qUser.id.eq(444)).execute();
+
+    }
+
+    @Test
+    public void fetchfirst()
+    {
+        QUser qUser=QUser.user;
+        Tuple r = new JPAQueryFactory(em).select(qUser.name,qUser.id).from(qUser).where(qUser.id.eq(431))
+                .fetchFirst();
+        assertThat(r).isNull();
+    }
+
+    /**
+     * 删选最大值方法
+     */
+    @Test
+    public void maxinTT()
+    {
+        QUser qUser=QUser.user;
+        Integer ages=new JPAQueryFactory(em).select(qUser.age.max()).from(qUser).fetchFirst();
+        assertThat(ages).isNull();
 
     }
 }
