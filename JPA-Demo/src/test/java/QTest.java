@@ -1,13 +1,22 @@
 import cn.mrdear.entity.QTCity;
 import cn.mrdear.entity.QUser;
 import cn.mrdear.entity.User;
+import cn.mrdear.utils.DateUtilsExt;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
+import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.dml.SQLInsertClause;
 import com.sun.xml.internal.bind.v2.TODO;
+
+import static com.querydsl.core.types.Ops.DateTimeOps.CURRENT_DATE;
 import static org.assertj.core.api.Assertions.*;
+
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.assertj.core.util.DateUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /****
@@ -203,6 +214,87 @@ public class QTest {
         QUser qUser=QUser.user;
         Integer ages=new JPAQueryFactory(em).select(qUser.age.max()).from(qUser).fetchFirst();
         assertThat(ages).isNull();
+
+    }
+
+    /**
+     * 测试日期比较
+     * jpa querydsl中格式化日期
+     */
+    @Test
+    public void dateTT()
+    {
+        QUser qUser=QUser.user;
+        //转日期
+        String dateString="2019-06-06";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date= LocalDate.parse(dateString, formatter);
+        Date ds = DateUtilsExt.localDateToDate(date);
+        String dateString2="2019-06-07 00:00:00";
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDate date2= LocalDate.parse(dateString2, formatter2);
+        Date ds2 = DateUtilsExt.localDateToDate(date2);
+
+        //方法1：StringTemplate DATE_FORMAT为mysql中用法
+        // ,oracle中 to_date('2004-05-07 13:23:44','yyyy-mm-dd hh24:mi:ss') to_char(sysdate,'dd')
+        String queryDate = DateFormatUtils.format(new Date(),"yyyy-MM-dd");
+
+        //建立格式化模板，这里相当于oracle语句DATE_FORMAT( ,'%Y-%m-%d')
+        StringTemplate dateExprOracle = Expressions
+                .stringTemplate("TO_CHAR({0},'%Y-%m-%d')",qUser.birthday);
+
+        //建立格式化模板，这里相当于mysql语句DATE_FORMAT( ,'%Y-%m-%d')
+        StringTemplate dateExpr = Expressions
+                .stringTemplate("DATE_FORMAT({0},'%Y-%m-%d')",qUser.birthday);
+        List<Tuple> s = new JPAQueryFactory(em)
+                .select(qUser.id,qUser.birthday )
+                .from(qUser)
+                .where(dateExpr.eq(dateString))
+                .orderBy(qUser.id.asc())
+                .fetch();
+        //方法2：普通eq
+        //当日期为时间搓时，普通方法无法准确使用eq查询某天，
+        List<Tuple> s2 = new JPAQueryFactory(em)
+                .select(qUser.id.shortValue(),qUser.birthday,qUser.name )
+                .from(qUser)
+                .where(qUser.birthday.eq(ds))
+                .orderBy(qUser.id.asc())
+                .fetch();
+        //方法3：between
+        List<Tuple> s3 = new JPAQueryFactory(em)
+                .select(qUser.id,qUser.birthday )
+                .from(qUser)
+                .where(qUser.birthday.between(ds,ds2))
+                .orderBy(qUser.id.asc())
+                .fetch();
+        assertThat(s).isNull();
+    }
+
+    /**
+     * 字符转Number
+     * qUser.name.castToNum(Integer.class)
+     * 万物皆可Template模板化
+     */
+    @Test
+    public void stringToNumber()
+    {
+        QUser qUser=QUser.user;
+        //方法1：NumberTemplate
+        NumberTemplate numberExpr =Expressions
+                .numberTemplate(Integer.class,"CONVERT({0},UNSIGNED)",qUser.name);
+        List<Tuple> s1 = new JPAQueryFactory(em)
+                .select(qUser.name,qUser.birthday )
+                .from(qUser)
+                .orderBy(numberExpr.desc())
+                .fetch();
+
+        //方法2：castToNum
+        List<Tuple> s2 = new JPAQueryFactory(em)
+                .select(qUser.name,qUser.birthday )
+                .from(qUser)
+                .orderBy(qUser.name.castToNum(Integer.class).desc())
+                .fetch();
+        assertThat(s1).isNull();
 
     }
 }
