@@ -230,7 +230,7 @@ public class QTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date= LocalDate.parse(dateString, formatter);
         Date ds = DateUtilsExt.localDateToDate(date);
-        String dateString2="2019-06-07 00:00:00";
+        String dateString2="2019-06-06 23:59:59";
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDate date2= LocalDate.parse(dateString2, formatter2);
         Date ds2 = DateUtilsExt.localDateToDate(date2);
@@ -241,7 +241,7 @@ public class QTest {
 
         //建立格式化模板，这里相当于oracle语句DATE_FORMAT( ,'%Y-%m-%d')
         StringTemplate dateExprOracle = Expressions
-                .stringTemplate("TO_CHAR({0},'%Y-%m-%d')",qUser.birthday);
+                .stringTemplate("TO_CHAR({0},'yyyy-mm-dd')",qUser.birthday);
 
         //建立格式化模板，这里相当于mysql语句DATE_FORMAT( ,'%Y-%m-%d')
         StringTemplate dateExpr = Expressions
