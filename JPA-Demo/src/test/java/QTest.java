@@ -49,6 +49,7 @@ public class QTest {
     @PersistenceContext
     private EntityManager em;
 
+
       /*@Autowired
         private SQLQueryFactory queryFactory;*/
 
