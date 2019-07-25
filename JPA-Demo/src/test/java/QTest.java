@@ -131,7 +131,7 @@ public class QTest {
                 .where(qUser.name.eq("s"))
                 //.groupBy(qUser.name)
                 .fetch();
-        log.error("-----------------------{}"/*,a.get(qUser.age.add(qUser.id).sum())*/);
+        log.error("-----------------------{}",a.get(0));
 
     }
     @Test
@@ -206,9 +206,9 @@ public class QTest {
         assertThat(r).isNull();
     }
 
-    /**
-     * 删选最大值方法
-     */
+/*    *
+     * 删选最大值方法*/
+
     @Test
     public void maxinTT()
     {
@@ -218,10 +218,10 @@ public class QTest {
 
     }
 
-    /**
+/*    *
      * 测试日期比较
-     * jpa querydsl中格式化日期
-     */
+     * jpa querydsl中格式化日期*/
+
     @Test
     public void dateTT()
     {
@@ -271,11 +271,11 @@ public class QTest {
         assertThat(s).isNull();
     }
 
-    /**
+ /*   *
      * 字符转Number
      * qUser.name.castToNum(Integer.class)
-     * 万物皆可Template模板化
-     */
+     * 万物皆可Template模板化*/
+
     @Test
     public void stringToNumber()
     {
@@ -296,6 +296,27 @@ public class QTest {
                 .orderBy(qUser.name.castToNum(Integer.class).desc())
                 .fetch();
         assertThat(s1).isNull();
+
+    }
+
+    /**
+     * 测试java的日期LocalDate等映射数据库类型
+     * 事实证明jpa还是不能正常映射LocalDate
+     *  JPA底层还是Hibernate，要使用Java8的LocalDate得引入hibernate-java8依赖。
+     *参考https://blog.csdn.net/mn960mn/article/details/53141366
+     * 应用场景
+     * 现在希望把createDate映射成表的date类型->LocalDate，createTime映射成datetime类型->LocalDateTime
+     */
+    @Test
+    public void dateTT2()
+    {
+        QUser qUser=QUser.user;
+        Date s1 = new JPAQueryFactory(em)
+                .select(qUser.birthday )
+                .from(qUser)
+                .where(qUser.name.eq("4"))
+                .fetchFirst();
+        System.out.println(s1);
 
     }
 }

@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 /****
@@ -31,6 +32,10 @@ public class User implements Serializable {
 
     @Column(name = "birthday")
     private Date birthday;
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
 
     public Date getBirthday() {
         return birthday;
