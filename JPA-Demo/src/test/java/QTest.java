@@ -206,7 +206,7 @@ public class QTest {
         assertThat(r).isNull();
     }
 
-/*    *
+    /*    *
      * 删选最大值方法*/
 
     @Test
@@ -218,7 +218,7 @@ public class QTest {
 
     }
 
-/*    *
+    /*    *
      * 测试日期比较
      * jpa querydsl中格式化日期*/
 
@@ -271,7 +271,7 @@ public class QTest {
         assertThat(s).isNull();
     }
 
- /*   *
+    /*   *
      * 字符转Number
      * qUser.name.castToNum(Integer.class)
      * 万物皆可Template模板化*/
@@ -318,6 +318,36 @@ public class QTest {
                 .fetchFirst();
         System.out.println(s1);
 
+    }
+
+    @Test
+    @Transactional
+    public void ddtt()
+    {
+        QUser qUser=QUser.user;
+        User s1 = new JPAQueryFactory(em)
+                .select(qUser )
+                .from(qUser)
+                .orderBy(qUser.birthday.desc())
+                .fetchFirst();
+        System.out.println(s1);
+    }
+
+    /**
+     * 测试sum函数会不会使多条查询结果变成一条结果
+     * 结果：变成一条了
+     */
+    @Test
+    @Transactional
+    public void ss1()
+    {
+        //
+        QUser qUser=QUser.user;
+        List<Tuple> s1 = new JPAQueryFactory(em)
+                .select(qUser.age.sum(),qUser.name)
+                .from(qUser)
+                .fetch();
+        System.out.println();
     }
 }
 
