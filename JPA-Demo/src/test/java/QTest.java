@@ -347,7 +347,19 @@ public class QTest {
                 .select(qUser.age.sum(),qUser.name)
                 .from(qUser)
                 .fetch();
-        System.out.println();
+        //测试查不到结果返回的是null还是空list->>>>结果是空list
+        List<Tuple> s2 = new JPAQueryFactory(em)
+                .select(qUser.age,qUser.name)
+                .from(qUser)
+                .where(qUser.name.eq("3dde"))
+                .fetch();
+        for (Tuple e : s2)
+        {
+
+        }
+        System.out.println(String.format("INN_GLP_FOR_CPS_P_%s.dat","dddd"));
     }
+
+
 }
 
