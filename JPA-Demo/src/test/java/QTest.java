@@ -16,6 +16,7 @@ import static com.querydsl.core.types.Ops.DateTimeOps.CURRENT_DATE;
 import static org.assertj.core.api.Assertions.*;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.assertj.core.util.DateUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -357,9 +359,39 @@ public class QTest {
         {
 
         }
+
+        List<Tuple> s3 = new JPAQueryFactory(em)
+                .select(qUser.age,qUser.name)
+                .from(qUser)
+                .groupBy(qUser.name)
+                .fetch();
         System.out.println(String.format("INN_GLP_FOR_CPS_P_%s.dat","dddd"));
     }
 
+    /**
+     * JPA中的eq方法不能为null
+     */
+    @Test
+    public void test()  {
+        Date s=null;
+        if (s==null)
+        {
+            try {
+            String s1= "1970-01-01";
+            s= DateUtils.parseDate(s1,"yyyy-MM-dd");
+            }catch (ParseException e)
+            {
+            }
+        }
+        QUser qUser=QUser.user;
+        String s333=null;
+        List<Tuple> s1 = new JPAQueryFactory(em)
+                .select(qUser.age,qUser.name)
+                .from(qUser)
+                .where(qUser.birthday.eq(s),
+                        qUser.name.eq(s333))
+                .fetch();
+    }
 
 }
 
