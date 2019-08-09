@@ -370,6 +370,9 @@ public class QTest {
 
     /**
      * JPA中的eq方法不能为null
+     * 大于小于判断一律不包含空null的数据
+     * //小于等于 loe
+     * //大于等于 goe
      */
     @Test
     public void test()  {
@@ -377,8 +380,8 @@ public class QTest {
         if (s==null)
         {
             try {
-            String s1= "1970-01-01";
-            s= DateUtils.parseDate(s1,"yyyy-MM-dd");
+                String s1= "2019-07-19";
+                s= DateUtils.parseDate(s1,"yyyy-MM-dd");
             }catch (ParseException e)
             {
             }
@@ -388,9 +391,13 @@ public class QTest {
         List<Tuple> s1 = new JPAQueryFactory(em)
                 .select(qUser.age,qUser.name)
                 .from(qUser)
-                .where(qUser.birthday.eq(s),
-                        qUser.name.eq(s333))
+                //小于等于 loe
+                //大于等于 goe
+                .where(qUser.birthday.loe(s)/*,
+                        qUser.name.eq(s333)*/,
+                        qUser.age.goe(3))
                 .fetch();
+        System.out.println();
     }
 
 }
