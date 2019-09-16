@@ -237,7 +237,6 @@ public class QTest {
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDate date2= LocalDate.parse(dateString2, formatter2);
         Date ds2 = DateUtilsExt.localDateToDate(date2);
-
         //方法1：StringTemplate DATE_FORMAT为mysql中用法
         // ,oracle中 to_date('2004-05-07 13:23:44','yyyy-mm-dd hh24:mi:ss') to_char(sysdate,'dd')
         String queryDate = DateFormatUtils.format(new Date(),"yyyy-MM-dd");
@@ -345,9 +344,10 @@ public class QTest {
     {
         //
         QUser qUser=QUser.user;
-        List<Tuple> s1 = new JPAQueryFactory(em)
-                .select(qUser.age.sum(),qUser.name)
+        List<User> s1 = new JPAQueryFactory(em)
+                .select(qUser)
                 .from(qUser)
+                .where(qUser.name.eq("3dde"))
                 .fetch();
         //测试查不到结果返回的是null还是空list->>>>结果是空list
         List<Tuple> s2 = new JPAQueryFactory(em)
@@ -398,6 +398,24 @@ public class QTest {
                         qUser.age.goe(3))
                 .fetch();
         System.out.println();
+    }
+
+    /**
+     * 测试.isEmpty() isNull()
+     * oracle中空的字段默认为null,mysql中空的字段默认为 ””
+     * 所以oracle中jpa判断为空为isnull,mysql中jpa判断为空为isEmpty
+     */
+    @Test
+    public void isEmpty()
+    {
+        QUser qUser =QUser.user;
+        //测试查不到结果返回的是null还是空list->>>>结果是空list
+        List<Tuple> s2 = new JPAQueryFactory(em)
+                .select(qUser.age,qUser.name)
+                .from(qUser)
+                .where(qUser.name.isEmpty())
+                .fetch();
+        org.springframework.util.Assert.notNull(s2,"查到数据了");
     }
 
 }
