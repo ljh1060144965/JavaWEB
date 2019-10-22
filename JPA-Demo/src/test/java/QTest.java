@@ -418,5 +418,18 @@ public class QTest {
         org.springframework.util.Assert.notNull(s2,"查到数据了");
     }
 
+    @Test
+    public void is2Empty()
+    {
+        QUser qUser =QUser.user;
+        //测试groupby会不会过滤空值,结果：不会忽略
+        List<Integer> s2 = new JPAQueryFactory(em)
+                .select(qUser.age)
+                .from(qUser)
+                .groupBy(qUser.age)
+                .fetch();
+        System.out.println(s2);
+    }
+
 }
 
