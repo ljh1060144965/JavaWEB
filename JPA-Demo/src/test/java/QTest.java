@@ -402,8 +402,8 @@ public class QTest {
 
     /**
      * 测试.isEmpty() isNull()
-     * oracle中空的字段默认为null,mysql中空的字段默认为 ””
-     * 所以oracle中jpa判断为空为isnull,mysql中jpa判断为空为isEmpty
+     * oracle中空的字段默认为null,mysql中空的字段默认为 null还是""是可以选择的
+     * 所以oracle中jpa判断为空为isnull,mysql中jpa判断为空为isEmpty，具体还是要看情况
      */
     @Test
     public void isEmpty()
@@ -413,7 +413,7 @@ public class QTest {
         List<Tuple> s2 = new JPAQueryFactory(em)
                 .select(qUser.age,qUser.name)
                 .from(qUser)
-                .where(qUser.name.isEmpty())
+                .where(qUser.name.isNull())
                 .fetch();
         org.springframework.util.Assert.notNull(s2,"查到数据了");
     }
