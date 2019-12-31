@@ -2,6 +2,7 @@ import cn.mrdear.entity.QTCity;
 import cn.mrdear.entity.QUser;
 import cn.mrdear.entity.User;
 import cn.mrdear.utils.DateUtilsExt;
+import com.google.common.collect.Lists;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
@@ -423,12 +424,27 @@ public class QTest {
     {
         QUser qUser =QUser.user;
         //测试groupby会不会过滤空值,结果：不会忽略
-        List<Integer> s2 = new JPAQueryFactory(em)
+        Integer s = new JPAQueryFactory(em)
                 .select(qUser.age)
                 .from(qUser)
-                .groupBy(qUser.age)
+                .where(qUser.age.eq(2323232))
+                .fetchOne();
+        System.out.println(s);
+    }
+
+    /*
+    测试jpa中in空的list会怎么样
+    结果：查不到结果，返回空list
+     */
+    @Test
+    public void intest(){
+        QUser qUser =QUser.user;
+        List s = new JPAQueryFactory(em)
+                .select(qUser)
+                .from(qUser)
+                .where(qUser.id.in(Lists.newArrayList()))
                 .fetch();
-        System.out.println(s2);
+        System.out.println(s.size());
     }
 
 }
